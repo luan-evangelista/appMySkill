@@ -3,17 +3,17 @@ import {
     View,
     Text,
     StyleSheet,
-    TextInput,
+    TextInput,  
     Platform,
     TouchableOpacity,
 } from 'react-native';
 
 export function Home() {
-    const [newSkill, setNewSkill] = useState('');
+    const [newSkills, setNewSkills] = useState('');
     const [mySkills, setMySkills] = useState([]);
 
     function handleAddNewSkill() {
-        setMySkills(oldState => [...oldState, newSkill]);
+        setMySkills(oldStateSkill => [...oldStateSkill, newSkills]);
     }
 
     return (
@@ -26,7 +26,7 @@ export function Home() {
                 style={styles.input}
                 placeholder='New Skill'
                 placeholderTextColor='#555'
-                onChangeText={setNewSkill}
+                onChangeText={setNewSkills}
             />
 
             <TouchableOpacity
