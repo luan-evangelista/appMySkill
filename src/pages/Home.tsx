@@ -10,28 +10,44 @@ import {
 import { Button } from '../components/Button';
 import { SkillCard } from '../components/SkillCard';
 
+interface SkillData {
+    id: string;
+    name: string;
+}
+
 export function Home() {
     const [newSkills, setNewSkills] = useState('');
-    const [mySkills, setMySkills] = useState([]);
+    const [mySkills, setMySkills] = useState<SkillData[]>([]);
     const [gretting, setGretting] = useState('');
 
     function handleAddNewSkill() {
-        setMySkills(oldStateSkill => [...oldStateSkill, newSkills]);
+        const data = {
+            id: String(new Date().getTime()),
+            name: newSkills
+        }
+
+        setMySkills(oldStateSkill => [...oldStateSkill, data]);
+    }
+
+    function handleRemoveSkill(id: string) {
+        setMySkills(oldStateSkill => oldStateSkill.filter(
+            skill => skill.id !== id
+        ));
     }
 
     // useEffect recebe dois parâmetros: 1º. Função que ele precisa executar, 2º. Array de Dependências
     useEffect(() => {
         const currentHour = new Date().getHours();
-        
-        if(currentHour < 12){
+
+        if (currentHour < 12) {
             setGretting('Good Morning');
         }
-        else if(currentHour >= 12 && currentHour < 18){
+        else if (currentHour >= 12 && currentHour < 18) {
             setGretting('Good Afternoon');
-        }else{
+        } else {
             setGretting('Good Night');
         }
-    }, []) 
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -40,7 +56,7 @@ export function Home() {
             </Text>
 
             <Text style={styles.greetings}>
-                { gretting }
+                {gretting}
             </Text>
 
             <TextInput
@@ -50,7 +66,10 @@ export function Home() {
                 onChangeText={setNewSkills}
             />
 
-            <Button onPress={handleAddNewSkill} />
+            <Button
+                onPress={handleAddNewSkill}
+                title="Add"
+            />
 
             <Text style={[styles.title, { marginVertical: 50 }]}>
                 My Skills
@@ -58,9 +77,12 @@ export function Home() {
 
             <FlatList
                 data={mySkills}
-                keyExtractor={item => item}
+                keyExtractor={item => item.id}
                 renderItem={({ item }) => (
-                    <SkillCard skill={item} />
+                    <SkillCard
+                        skill={item.name}
+                        onPress={() => handleRemoveSkill(item.id)}
+                    />
                 )}
             />
 
@@ -88,7 +110,7 @@ const styles = StyleSheet.create({
         marginTop: 30,
         borderRadius: 7
     },
-    greetings:{
+    greetings: {
         color: '#FFF'
     }
 })
